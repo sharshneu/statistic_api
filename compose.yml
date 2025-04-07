@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: statistic_api_db
+    restart: unless-stopped
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_USER: statistic_api_user
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: statistic_api
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U statistic_api_user -d statistic_api" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - statistic_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  statistic_data:
+    driver: local

@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Shershnev
+      changes:
+        - sql:
+            sql: |
+              CREATE TYPE sensor_type_enum AS ENUM (
+                'PRESSURE',
+                'VOLTAGE',
+                'TEMPERATURE',
+                'HUMIDITY'
+              );
+
+  - changeSet:
+      id: 2
+      author: Shershnev
+      changes:
+        - createTable:
+            tableName: sensor
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type
+                  type: sensor_type_enum
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 3
+      author: Shershnev
+      changes:
+        - sql:
+            sql: |
+              CREATE CAST (character varying as sensor_type_enum) WITH INOUT AS IMPLICIT;
+            splitStatements: true
+            endDelimiter: ;
+      rollback:
+        - sql:
+            sql: |
+              DROP CAST IF EXISTS (character varying as sensor_type_enum);
+            splitStatements: true
+            endDelimiter: ;
+
+
+
+
+
+
