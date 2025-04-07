@@ -31,7 +31,7 @@ public class ScheduledSensorServiceImpl implements ScheduledSensorService {
         this.sensorService = sensorService;
     }
 
-    @Scheduled(cron = "5 * * * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void fetchAndStoreSensors() {
         try {
             String token = authService.getAuthToken();
@@ -47,7 +47,7 @@ public class ScheduledSensorServiceImpl implements ScheduledSensorService {
 
     private void sendRequestForSensors(HttpEntity<String> entity) {
         ResponseEntity<SensorDto[]> response = restTemplate.exchange(
-                "http://app1:8080/sensors",
+                "http://localhost:8080/sensors",
                 HttpMethod.GET,
                 entity,
                 SensorDto[].class
